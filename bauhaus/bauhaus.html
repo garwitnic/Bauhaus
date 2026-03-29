@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bauhaus Designmethodik</title>
+    <style>
+        :root {
+            --image-max-width: clamp(170px, 27vh, 300px);
+            --ink: #111111;
+            --paper: #f5f0e4;
+            --white: #ffffff;
+            --red: #d7261e;
+            --blue: #0d47a1;
+            --yellow: #f2c300;
+            --shadow: 10px 10px 0 #111111;
+        }
+
+        body {
+            font-family: "Futura", "Avenir Next", "Century Gothic", "Trebuchet MS", sans-serif;
+            line-height: 1.4;
+            color: var(--ink);
+            background: var(--paper);
+            margin: 0;
+            padding: 30px 20px;
+            height: 100vh;
+            box-sizing: border-box;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: var(--yellow);
+            clip-path: polygon(70% 0, 100% 0, 100% 100%, 42% 100%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 16px 0 22px;
+            font-weight: 700;
+            font-size: clamp(1.2rem, 2.4vw, 1.75rem);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            max-width: 1100px;
+            position: relative;
+            z-index: 1;
+            padding: 0;
+            background: transparent;
+            border: 0;
+        }
+
+        .page-nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 2px;
+            max-width: 1120px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--ink);
+            background: var(--white);
+            border: 3px solid var(--ink);
+            border-radius: 0;
+            padding: 8px 12px;
+            font-size: 0.84rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            transition: transform 0.15s ease, background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .nav-link:hover {
+            transform: translateY(-2px);
+            background: #ebe5d8;
+        }
+
+        .nav-link-active {
+            background: var(--red);
+            border-color: var(--red);
+            color: var(--white);
+            pointer-events: none;
+        }
+
+        .interactive-container {
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: center;
+            gap: 36px;
+            max-width: 1120px;
+            width: min(1120px, calc(100vw - 40px));
+            height: clamp(430px, 58vh, 560px);
+            background: linear-gradient(90deg, #f9f4e8 0 57%, #f0e7d5 57% 100%);
+            padding: 22px;
+            border: 4px solid var(--ink);
+            border-radius: 0;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+        }
+
+        .visual-panel {
+            flex: 0 0 var(--image-max-width);
+            width: min(var(--image-max-width), 100%);
+            max-width: min(var(--image-max-width), 100%);
+            margin: 0;
+            align-self: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .image-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 0;
+        }
+
+        .image-caption {
+            margin: 0;
+            font-size: 0.82rem;
+            color: var(--ink);
+            text-align: center;
+            line-height: 1.3;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: transparent;
+            border: 0;
+            padding: 4px 0 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .image-caption-hidden {
+            display: none;
+        }
+
+        .hotspot {
+            position: absolute;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.25s ease, backdrop-filter 0.25s ease, -webkit-backdrop-filter 0.25s ease;
+        }
+
+        .hotspot:hover {
+            background-color: rgba(255, 255, 255, 0.22);
+            mix-blend-mode: screen;
+            -webkit-backdrop-filter: brightness(1.24);
+            backdrop-filter: brightness(1.24);
+        }
+
+        .text-display {
+            flex: 1 1 0;
+            min-width: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            gap: 10px;
+        }
+
+        .part-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+        }
+
+        .part-btn {
+            border: 2px solid var(--ink);
+            background: var(--white);
+            color: var(--ink);
+            border-radius: 999px;
+            padding: 7px 14px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            line-height: 1.2;
+            cursor: pointer;
+            transition: background-color 0.2s ease, color 0.2s ease, transform 0.12s ease;
+        }
+
+        .part-btn:hover {
+            background: #ebe5d8;
+            transform: translateY(-1px);
+        }
+
+        .part-btn:focus-visible {
+            outline: 2px solid var(--blue);
+            outline-offset: 2px;
+        }
+
+        .part-btn-active {
+            background: var(--blue);
+            border-color: var(--blue);
+            color: var(--white);
+        }
+
+        .info-box {
+            background: var(--white);
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow-y: auto;
+            padding: 18px 20px;
+            border: 3px solid var(--ink);
+            border-radius: 0;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        .info-box::before {
+            content: none;
+        }
+
+        .info-box h3 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.05rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--ink);
+        }
+
+        .info-box p {
+            font-size: 0.96rem;
+            line-height: 1.48;
+            margin-bottom: 11px;
+        }
+
+        .info-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        @media (max-width: 980px) {
+            body {
+                height: auto;
+                overflow-y: auto;
+            }
+
+            .interactive-container {
+                flex-wrap: wrap;
+                height: auto;
+                overflow: visible;
+                width: min(1120px, calc(100vw - 28px));
+                box-shadow: 7px 7px 0 var(--ink);
+            }
+
+            .visual-panel {
+                margin: 0 auto;
+            }
+
+            .text-display,
+            .info-box {
+                height: auto;
+            }
+
+            .info-box {
+                overflow: visible;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="page-nav" aria-label="Themennavigation">
+        <a class="nav-link nav-link-active" href="#einfuehrung" data-topic="einfuehrung">Die Idee Bauhaus</a>
+        <a class="nav-link" href="#leuchte" data-topic="leuchte">Radikale Funktionsanalyse</a>
+        <a class="nav-link" href="#teekanne" data-topic="teekanne">Geometrische Dekonstruktion</a>
+        <a class="nav-link" href="#hocker" data-topic="hocker">Zweckmäßigkeit und das menschliche Maß</a>
+        <a class="nav-link" href="#stuhl" data-topic="stuhl">Materialgerechtigkeit</a>
+        <a class="nav-link" href="#schach" data-topic="schach">Industrielle Serienfertigung</a>
+    </nav>
+
+    <h1 id="page-title">Kernfrage: Was muss das Objekt physikalisch leisten?</h1>
+
+    <div class="interactive-container">
+        <div class="visual-panel">
+            <div class="image-wrapper" id="image-wrapper">
+                <img id="topic-image" src="lampe.png" alt="Wilhelm Wagenfeld Tischleuchte WG 24">
+            </div>
+            <p class="image-caption" id="image-caption">Wagenfeld-Leuchte WG 24</p>
+        </div>
+
+        <div class="text-display">
+            <div class="part-nav" id="part-nav" aria-label="Bereichsnavigation"></div>
+            <div class="info-box" id="info-content"></div>
+        </div>
+    </div>
+
+    <script>
+        const topics = {
+            einfuehrung: {
+                stepTitle: "Die Idee Bauhaus",
+                isIntro: true,
+                coreQuestion: "Was war das Bauhaus wirklich?",
+                objectName: "Die Idee Bauhaus",
+                hideImageCaption: true,
+                enableImageHotspots: false,
+                image: "venn.png",
+                imageAlt: "Venn-Diagramm zur Einordnung der Bauhaus-Idee",
+                imageWidth: "clamp(260px, 45vh, 400px)",
+                introHtml: `
+                    <h3>Die Idee im Kern</h3>
+                    <p>Das Bauhaus wollte die künstliche Trennung zwischen freier Kunst und Handwerk aufheben. Die Gestaltung sollte nicht mehr elitären Künstlern vorbehalten sein.</p>
+                    <p>Das berühmte Motto <strong>"Form follows function"</strong> (Die Form ordnet sich der Funktion unter) wurde hier radikal gelebt. Die Haltung dahinter war tiefgreifend sozial und utopisch: Durch gutes, funktionales und erschwingliches Design kann man den Alltag der Massen verbessern und somit eine gerechtere, modernere Gesellschaft formen. Weg vom elitären Prunk, hin zur klaren Nutzbarkeit für alle.</p>
+                `,
+                parts: [
+                    {
+                        id: "protagonisten",
+                        label: "Die Köpfe",
+                        content: `
+                            <h3>Die Protagonisten</h3>
+                            <p>Vordenker wie <strong>Walter Gropius</strong> (der Gründer), <strong>Marcel Breuer</strong>, <strong>Marianne Brandt</strong> oder <strong>Ludwig Mies van der Rohe</strong> prägten die Schule.</p>
+                            <p>Sie verstanden sich nicht als entrückte, elitäre Künstler in ihren Ateliers, sondern vielmehr als gestaltende Handwerker, die eine Dienstleistung für die Gesellschaft erbringen wollten.</p>
+                        `,
+                        hotspots: []
+                    },
+                    {
+                        id: "zeitgeist",
+                        label: "Der Zeitgeist",
+                        content: `
+                            <h3>Einordnung in die Weimarer Republik (1919–1933)</h3>
+                            <p>Europa lag nach dem Ersten Weltkrieg in Trümmern. Es herrschte extreme Armut und Wohnungsnot, aber gleichzeitig brach eine enorme technologische und kulturelle Befreiung an (die "Goldenen Zwanziger"). Viele Menschen lebten in dunklen, engen und unhygienischen Mietskasernen.</p>
+                            <p>Das Bauhaus war die direkte Antwort auf diese Not: Wenn Wohnraum knapp ist, müssen Möbel platzsparend, leicht und multifunktional sein. Es umarmte die industrielle Massenproduktion, anstatt sie zu fürchten, um Güter für alle erschwinglich zu machen.</p>
+                        `,
+                        hotspots: []
+                    },
+                    {
+                        id: "provokation",
+                        label: "Die Provokation",
+                        content: `
+                            <h3>Widerspruch & Provokation</h3>
+                            <p>Das Bauhaus provozierte das konservative Bürgertum extrem. Während die Bürgerlichen schwere, verzierte Möbel als Statussymbol liebten, war das Bauhaus links, international, radikal und minimalistisch.</p>
+                            <p>Es forderte die traditionellen Werte (Historismus, Kitsch, Überfluss) heraus. Wegen dieser modernen Haltung wurde die Schule von den erstarkenden Rechten massiv bekämpft und schließlich 1933 von den Nationalsozialisten zur Schließung gezwungen.</p>
+                        `,
+                        hotspots: []
+                    },
+                    {
+                        id: "epoche",
+                        label: "Designepoche",
+                        content: `
+                            <h3>Einordnung in die Designepoche</h3>
+                            <p><strong>Womit es bricht:</strong> Das Bauhaus bricht radikal mit dem Historismus sowie dem Jugendstil (der von floralen Ornamenten lebte). Zwar teilte es mit der englischen "Arts and Crafts"-Bewegung die Liebe zum Handwerk, doch im Gegensatz zu dieser machte das Bauhaus die Maschine zum Partner.</p>
+                            <p><strong>Was es vorbereitet:</strong> Es ist die Kinderstube des modernen Industriedesigns. Ohne den Grundstein des Bauhauses (Minimalismus, International Style) gäbe es das heutige Design von Firmen wie Braun oder Apple in dieser Form nicht.</p>
+                        `,
+                        hotspots: []
+                    }
+                ]
+            },
+            leuchte: {
+                stepTitle: "Radikale Funktionsanalyse",
+                coreQuestion: "Was muss das Objekt physikalisch leisten?",
+                objectName: "Wagenfeld-Leuchte WG 24",
+                image: "lampe.png",
+                compareImage: "lampe_alt.png",
+                imageAlt: "Wilhelm Wagenfeld Tischleuchte WG 24",
+                compareImageAlt: "Historische Vergleichsleuchte mit dekorativem Schwerpunkt",
+                imageWidth: "clamp(170px, 27vh, 300px)",
+                introHtml: `
+                    <h3>Schritt 1: Die radikale Funktionsanalyse</h3>
+                    <p>Bevor am Bauhaus auch nur ein einziger Strich für das spätere Aussehen eines Produkts gezeichnet wurde, stand eine fundamentale Frage im Raum: Was genau muss dieses Objekt leisten? Bei der radikalen Funktionsanalyse wird ein Produkt in seine absoluten physikalischen und mechanischen Grundbedürfnisse zerlegt. Historischer Ballast, rein dekorative Elemente oder traditionelle Formenverliebtheit werden komplett ausgeblendet. Der berühmte Leitsatz „Form follows function“ (Die Form folgt der Funktion) nimmt genau in diesem Schritt seinen Anfang: Die Funktion diktiert den Entwurf.</p>
+                `,
+                compareHtml: `
+                    <h3>Vergleich</h3>
+                    <p>Der Gegensatz: Bei der Tiffany-Leuchte steht die Dekoration im Vordergrund. Der Fuß ist oft wie ein Baumstamm geformt oder von Skulpturen (z. B. Engeln oder Frauenfiguren) umrankt, die rein gar nichts mit der Funktion "Licht machen" zu tun haben. Der Schirm aus buntem Bleiglas streut das Licht nicht optimal zum Arbeiten, sondern erzeugt ein diffuses, rein stimmungsvolles Farbmuster. Die Funktion ordnet sich der Dekoration völlig unter.</p>
+                `,
+                parts: [
+                    {
+                        id: "schirm",
+                        label: "Schirm",
+                        content: `
+                            <h3>Der Schirm (Lichtstreuung)</h3>
+                            <p><strong>Die Anforderung:</strong> Die grelle Glühbirne darf nicht blenden; das Licht muss weich und gleichmäßig auf den Tisch abgegeben werden.</p>
+                            <p><strong>Die Lösung:</strong> Eine exakte Halbkugel aus Opalglas (Milchglas). Diese geometrische Grundform sorgt physikalisch für die optimalste, schattenfreie Streuung des Lichts.</p>
+                        `,
+                        hotspots: [
+                            { top: "0%", left: "2%", width: "96%", height: "45%", borderRadius: "50% 50% 14% 14%" }
+                        ]
+                    },
+                    {
+                        id: "schaft",
+                        label: "Schaft",
+                        content: `
+                            <h3>Der Schaft (Höhe & Kabelführung)</h3>
+                            <p><strong>Die Anforderung:</strong> Das Leuchtmittel muss auf eine nützliche Höhe gebracht werden, und der Strom muss sicher von unten zur Fassung geleitet werden.</p>
+                            <p><strong>Die Lösung:</strong> Ein transparentes Glasrohr umschließt ein vernickeltes Metallrohr, in dem das Kabel verläuft. Die technische Notwendigkeit wird nicht versteckt, sondern ehrlich in das Design integriert.</p>
+                        `,
+                        hotspots: [
+                            { top: "44%", left: "42%", width: "16%", height: "42%" }
+                        ]
+                    },
+                    {
+                        id: "schalter",
+                        label: "Schalter",
+                        content: `
+                            <h3>Der Schalter (Bedienung)</h3>
+                            <p><strong>Die Anforderung:</strong> Die Leuchte muss sich intuitiv und einfach ein- und ausschalten lassen.</p>
+                            <p><strong>Die Lösung:</strong> Eine Zugschalter-Konstruktion mit einer geraden Schnur und einem kleinen Metallkügelchen als Gewicht am Ende. Intuitiv greifbar und rein auf die Mechanik reduziert.</p>
+                        `,
+                        hotspots: [
+                            { top: "43%", left: "57%", width: "17%", height: "40%", borderRadius: "12px" }
+                        ]
+                    },
+                    {
+                        id: "fuss",
+                        label: "Fuß",
+                        content: `
+                            <h3>Der Fuß (Standfestigkeit)</h3>
+                            <p><strong>Die Anforderung:</strong> Die Leuchte benötigt einen schweren, stabilen Schwerpunkt, damit sie nicht umkippt.</p>
+                            <p><strong>Die Lösung:</strong> Eine schlichte, kreisrunde und dicke Glasplatte. Der Kreis bietet physikalisch die gleichmäßigste Standfläche in alle Richtungen.</p>
+                        `,
+                        hotspots: [
+                            { top: "84%", left: "13%", width: "74%", height: "15%", borderRadius: "50%" }
+                        ]
+                    }
+                ]
+            },
+            teekanne: {
+                stepTitle: "Geometrische Dekonstruktion",
+                coreQuestion: "Wie lässt sich die Form auf elementare Grundkörper reduzieren?",
+                objectName: "Tee-Extraktkännchen MT 49",
+                image: "teekanne.png",
+                compareImage: "teekanne_alt.png",
+                imageAlt: "Bauhaus Teekanne mit geometrischen Grundformen",
+                compareImageAlt: "Historische Vergleichsteekanne mit Ornamenten",
+                imageWidth: "clamp(240px, 41vh, 390px)",
+                introHtml: `
+                    <h3>Schritt 2: Die Geometrische Dekonstruktion</h3>
+                    <p>Sobald im Bauhaus die Funktion eines Objekts geklärt war (Schritt 1), stellte sich die Frage nach der Formgebung. Die Lösung lag in der radikalen Vereinfachung: der sogenannten geometrischen Dekonstruktion. Statt historische Verzierungen, florale Muster oder komplexe, organische Schwünge zu verwenden, bedienten sich die Bauhaus-Designer eines strikten Baukastensystems aus elementaren geometrischen Grundformen. Alles wurde auf Kreis, Quadrat und Dreieck beziehungsweise auf deren dreidimensionale Entsprechungen Kugel, Würfel, Zylinder und Kegel reduziert. Diese Formen galten als universell verständlich, zeitlos und vor allem: sie waren ideal für die spätere maschinelle Serienproduktion.</p>
+                `,
+                compareHtml: `
+                    <h3>Vergleich</h3>
+                    <p>Der Gegensatz: Solche historischen Teekannen sind überladen mit Ornamenten, ziselierten Blumenmustern und Schnörkeln. Der Ausguss windet sich wie ein S-förmiger Schwanenhals, der Korpus ist bauchig und unregelmäßig, der Griff oft astförmig. Es gibt keine klare, greifbare Grundgeometrie. Diese komplexen, organischen Formen sind schwer zu reinigen und unmöglich maschinell in Massen zu produzieren - sie erfordern aufwendige Handarbeit (Treiben und Ziselieren des Silbers).</p>
+                `,
+                parts: [
+                    {
+                        id: "korpus",
+                        label: "Korpus",
+                        content: `
+                            <h3>Der Korpus (Die Kugelform)</h3>
+                            <p><strong>Die Umsetzung:</strong> Der Hauptkörper des Kännchens ist eine exakte Halbkugel.</p>
+                            <p><strong>Der Grund:</strong> Die Kugel ist der effizienteste geometrische Körper, um bei geringster Oberfläche das maximale Volumen aufzunehmen. Zudem hält diese kompakte Form die Wärme des hochkonzentrierten Tee-Extrakts optimal im Inneren.</p>
+                        `,
+                        hotspots: [
+                            { top: "24%", left: "14%", width: "61%", height: "44%", borderRadius: "55% 55% 42% 42%" }
+                        ]
+                    },
+                    {
+                        id: "deckel",
+                        label: "Deckel",
+                        content: `
+                            <h3>Der Deckel (Die Kreisfläche)</h3>
+                            <p><strong>Die Umsetzung:</strong> Eine flache, kreisrunde Scheibe schließt die Halbkugel bündig ab. Sie unterbricht die reine Geometrie des Hauptkörpers nicht, sondern vollendet sie.</p>
+                        `,
+                        hotspots: [
+                            { top: "7%", left: "31%", width: "42%", height: "23%", borderRadius: "50%" }
+                        ]
+                    },
+                    {
+                        id: "ausguss",
+                        label: "Ausguss",
+                        content: `
+                            <h3>Der Ausguss (Der Zylinder)</h3>
+                            <p><strong>Die Umsetzung:</strong> Kein geschwungener Röhrenhals, sondern ein kurzes, schräg angesetztes Zylindersegment. Er ist exakt dort positioniert, wo das Ausgießen physikalisch am besten funktioniert.</p>
+                        `,
+                        hotspots: [
+                            { top: "14%", left: "0%", width: "26%", height: "22%", borderRadius: "45% 8% 35% 55%" }
+                        ]
+                    },
+                    {
+                        id: "griff",
+                        label: "Griff",
+                        content: `
+                            <h3>Der Griff (Der Halbkreis)</h3>
+                            <p><strong>Die Umsetzung:</strong> Ein strenger, halbrunder Bogen (D-Form) aus Ebenholz, der über dem Korpus thront.</p>
+                            <p><strong>Der Grund:</strong> Die Geometrie bleibt erhalten, aber das Material wechselt bewusst: Das dunkle Holz bildet nicht nur einen optischen Kontrast zum hellen Metall, sondern verhindert als Isolator, dass man sich beim Einschenken die Finger verbrennt.</p>
+                        `,
+                        hotspots: [
+                            { top: "0%", left: "82%", width: "18%", height: "58%", borderRadius: "40% 55% 45% 45%" }
+                        ]
+                    },
+                    {
+                        id: "fuss",
+                        label: "Fuß",
+                        content: `
+                            <h3>Der Fuß (Das Kreuz)</h3>
+                            <p><strong>Die Umsetzung:</strong> Das Kännchen steht nicht auf einem klassischen runden Sockel, sondern auf einem präzisen, architektonischen Balkenkreuz aus Blech.</p>
+                            <p><strong>Der Grund:</strong> Es hebt den heißen Korpus von der empfindlichen Tischplatte ab und verleiht der massiven Halbkugel eine optische Leichtigkeit, als würde sie schweben.</p>
+                        `,
+                        hotspots: [
+                            { top: "66%", left: "27%", width: "42%", height: "33%", borderRadius: "14% 14% 30% 30%" }
+                        ]
+                    }
+                ]
+            },
+            hocker: {
+                stepTitle: "Zweckmäßigkeit und das menschliche Maß",
+                coreQuestion: "Wie dient das Objekt dem Nutzer im Alltag (Ergonomie/Flexibilität)?",
+                objectName: "Stahlrohr-Hocker B 9",
+                enableImageHotspots: false,
+                image: "hocker.png",
+                compareImage: "hocker_alt.png",
+                imageAlt: "Marcel Breuer Hocker B 9 aus Stahlrohr",
+                compareImageAlt: "Historischer Vergleichshocker mit schwerem Polsteraufbau",
+                imageWidth: "clamp(240px, 41vh, 390px)",
+                introHtml: `
+                    <h3>Schritt 3: Zweckmäßigkeit und das menschliche Maß</h3>
+                    <p>Nachdem die physikalische Funktion (Schritt 1) und die formale Grundsprache (Schritt 2) geklärt sind, rückt der Mensch in den Mittelpunkt des Designprozesses. Am Bauhaus wurde Gestaltung nicht als Selbstzweck gesehen, sondern als Dienstleistung am Nutzer. Ein Produkt muss zweckmäßig sein - es soll den Alltag erleichtern, flexibel nutzbar sein und wenig Aufwand fordern. Gleichzeitig muss es dem menschlichen Maß entsprechen: Die Proportionen, das Gewicht und die Ergonomie werden exakt auf den menschlichen Körper und seine Bewegungsabläufe abgestimmt. Schwere, unbewegliche Möbelstücke, die den Raum dominieren, wurden durch leichte, dienende Objekte ersetzt.</p>
+                `,
+                compareHtml: `
+                    <h3>Vergleich</h3>
+                    <p>Der Gegensatz: Dieser historische Hocker ist ein massives, schwerfälliges Möbelstück. Er ist nur für einen einzigen Zweck gedacht (die Füße abzulegen oder repräsentativ in der Raummitte zu stehen). Durch das enorme Gewicht von Massivholz, Sprungfedern und dicken Samtpolstern lässt er sich kaum bewegen. Er diktiert den Raum, anstatt sich flexibel dem Menschen und seinen wechselnden Bedürfnissen anzupassen.</p>
+                `,
+                parts: [
+                    {
+                        id: "gewicht",
+                        label: "Gewicht",
+                        content: `
+                            <h3>Das Gewicht (Leichtigkeit im Alltag)</h3>
+                            <p><strong>Die Anforderung:</strong> Möbel sollten keine unbeweglichen Monumente mehr sein, sondern flexibel dorthin wandern, wo der Mensch sie gerade braucht.</p>
+                            <p><strong>Die Lösung:</strong> Das gebogene Stahlrohrgestell ist extrem biegefest und stabil, wiegt aber nur einen Bruchteil eines klassischen Holzstuhls. Der Hocker lässt sich mühelos mit einer Hand anheben und im Raum umstellen.</p>
+                        `,
+                        hotspots: [
+                            { top: "23%", left: "0%", width: "37%", height: "76%", borderRadius: "24% 16% 30% 30%" }
+                        ]
+                    },
+                    {
+                        id: "proportionen",
+                        label: "Proportionen",
+                        content: `
+                            <h3>Die Proportionen (Das menschliche Maß)</h3>
+                            <p><strong>Die Anforderung:</strong> Ein Sitzmöbel muss bequemen Halt bieten, ohne Platz zu verschwenden.</p>
+                            <p><strong>Die Lösung:</strong> Die Höhe des Hockers und die Maße der hölzernen Sitzfläche sind exakt auf die Ergonomie einer sitzenden Person abgestimmt. Das Design verzichtet auf alles Überflüssige wie Arm- oder Rückenlehnen, um maximale Bewegungsfreiheit zu garantieren.</p>
+                        `,
+                        hotspots: [
+                            { top: "2%", left: "15%", width: "66%", height: "34%", borderRadius: "18% 22% 22% 18%" }
+                        ]
+                    },
+                    {
+                        id: "multifunktion",
+                        label: "Multifunktion",
+                        content: `
+                            <h3>Die Multifunktionalität (Der flexible Zweck)</h3>
+                            <p><strong>Die Anforderung:</strong> In modernen, oft kleineren Wohnungen müssen Möbel vielseitig sein.</p>
+                            <p><strong>Die Lösung:</strong> Ist der B 9 ein Hocker zum Sitzen oder ein Beistelltisch für die Teetasse? Die flache, schnörkellose Holzplatte lässt beides zu. Breuer dachte nicht in starren Kategorien, sondern schuf ein echtes Universalmöbel.</p>
+                        `,
+                        hotspots: [
+                            { top: "16%", left: "24%", width: "50%", height: "34%", borderRadius: "12% 14% 16% 12%" }
+                        ]
+                    },
+                    {
+                        id: "raumoekonomie",
+                        label: "Raumökonomie",
+                        content: `
+                            <h3>Die Raumökonomie (Stapelbarkeit und Transparenz)</h3>
+                            <p><strong>Die Anforderung:</strong> Das Möbelstück darf den Raum weder physisch noch optisch vollstellen.</p>
+                            <p><strong>Die Lösung:</strong> Durch die rahmenartige Konstruktion wirkt der Hocker fast transparent; man kann sprichwörtlich durch ihn hindurchsehen. Zudem entwarf Breuer den B 9 als Teil einer Serie von Satztischen in abgestuften Größen, die sich bei Nichtgebrauch extrem platzsparend exakt ineinanderschieben ließen.</p>
+                        `,
+                        hotspots: [
+                            { top: "33%", left: "46%", width: "52%", height: "58%", borderRadius: "16% 18% 24% 22%" }
+                        ]
+                    }
+                ]
+            },
+            stuhl: {
+                stepTitle: "Materialgerechtigkeit",
+                coreQuestion: "Wie werden die spezifischen Eigenschaften der Werkstoffe ehrlich eingesetzt?",
+                objectName: "Freischwinger B 32 / Cesca",
+                image: "stuhl.png",
+                compareImage: "stuhl_alt.png",
+                imageAlt: "Freischwinger-Stuhl mit Stahlrohr, Holzrahmen und Wiener Geflecht",
+                compareImageAlt: "Historischer Vergleichssessel mit verdeckter Konstruktion",
+                imageWidth: "clamp(240px, 41vh, 390px)",
+                introHtml: `
+                    <h3>Schritt 4: Die Materialgerechtigkeit</h3>
+                    <p>Ein zentrales Dogma des Bauhauses war die absolute Ehrlichkeit gegenüber dem Material. In der Vergangenheit wurden oft minderwertige Materialien kaschiert, um teurere vorzutäuschen (z. B. Holz, das wie Marmor bemalt wurde), oder Konstruktionen wurden unter üppigen Polstern versteckt. Die Bauhaus-Methodik fordert stattdessen Materialgerechtigkeit: Jedes Material (ob Glas, Stahl, Holz oder Stoff) hat spezifische physikalische Eigenschaften, Stärken und eine eigene Ästhetik. Diese Eigenschaften sollen nicht versteckt, sondern bewusst genutzt und offen gezeigt werden. Das Material darf genau das sein, was es ist.</p>
+                `,
+                compareHtml: `
+                    <h3>Vergleich</h3>
+                    <p>Der Gegensatz: Beim Chesterfield-Sessel (oder ähnlichen Polstermöbeln der Zeit) wird die eigentliche Konstruktion komplett versteckt. Das innere Holzgerüst, das die Stabilität bringt, ist unsichtbar unter dicken Schichten von Rosshaar, Federn und genageltem Leder oder Samt begraben. Das Material darf nicht zeigen, was es statisch leistet. Oft wurden im 19. Jahrhundert auch Materialien verfälscht: Gips wurde bemalt, um wie Marmor auszusehen, oder billiges Holz wurde furniert, um Mahagoni vorzutäuschen. Das Bauhaus nannte das "Materiallüge".</p>
+                `,
+                parts: [
+                    {
+                        id: "stahlrohr",
+                        label: "Stahlrohr",
+                        content: `
+                            <h3>Das verchromte Stahlrohr (Funktion: Tragwerk und Federung)</h3>
+                            <p><strong>Die Eigenschaft:</strong> Kaltgezogenes Stahlrohr ist extrem belastbar, aber gleichzeitig stark elastisch.</p>
+                            <p><strong>Die materialgerechte Nutzung:</strong> Breuer nutzt genau diese Elastizität für die revolutionäre Konstruktion ohne Hinterbeine. Anstatt das Stahlrohr starr zu verbauen, lässt er es seine natürliche Spannkraft entfalten - der Stuhl federt beim Sitzen sanft nach. Das Metall wird nicht farbig lackiert, um es zu verstecken, sondern glänzend verchromt. Die kühle, maschinelle Ästhetik der Industrie wird stolz zur Schau gestellt.</p>
+                        `,
+                        hotspots: [
+                            { top: "38%", left: "0%", width: "28%", height: "61%", borderRadius: "22% 14% 24% 28%" },
+                            { top: "49%", left: "17%", width: "68%", height: "16%", borderRadius: "16% 16% 20% 20%" },
+                            { top: "45%", left: "56%", width: "44%", height: "55%", borderRadius: "14% 22% 22% 26%" }
+                        ]
+                    },
+                    {
+                        id: "buchenholz",
+                        label: "Buchenholz",
+                        content: `
+                            <h3>Das Buchenholz (Funktion: Rahmen und Verbindung)</h3>
+                            <p><strong>Die Eigenschaft:</strong> Holz ist stabil, lässt sich gut formen und fühlt sich warm an.</p>
+                            <p><strong>Die materialgerechte Nutzung:</strong> Das Holz bildet den festen Rahmen für die Sitz- und Rückenfläche. Es dient als visuelle und haptische Wärmebrücke zwischen der kühlen Ausstrahlung des industriellen Stahlrohrs und dem menschlichen Körper. Es gibt dem Stuhl Kontur und verankert ihn in einer handwerklichen Tradition.</p>
+                        `,
+                        hotspots: [
+                            { top: "0%", left: "21%", width: "78%", height: "38%", borderRadius: "16% 16% 14% 14%" },
+                            { top: "33%", left: "1%", width: "66%", height: "16%", borderRadius: "18% 12% 14% 16%" }
+                        ]
+                    },
+                    {
+                        id: "geflecht",
+                        label: "Wiener Geflecht",
+                        content: `
+                            <h3>Das Wiener Geflecht (Funktion: Sitzkomfort und Leichtigkeit)</h3>
+                            <p><strong>Die Eigenschaft:</strong> Dieses Naturmaterial (Rattan) ist extrem leicht, luftdurchlässig, leicht flexibel und reißfest.</p>
+                            <p><strong>Die materialgerechte Nutzung:</strong> Anstatt den Stuhl mit schweren, dicken Textilpolstern zu beschweren, wählt Breuer das traditionelle Rohrgeflecht. Es passt sich beim Sitzen ergonomisch an, lässt die Haut atmen und unterstützt die optische Leichtigkeit und Transparenz, die schon das Stahlrohrgestell vorgibt.</p>
+                        `,
+                        hotspots: [
+                            { top: "2%", left: "27%", width: "67%", height: "30%", borderRadius: "12% 12% 14% 12%" },
+                            { top: "36%", left: "5%", width: "54%", height: "8%", borderRadius: "14% 10% 10% 14%" }
+                        ]
+                    }
+                ]
+            },
+            schach: {
+                stepTitle: "Industrielle Serienfertigung",
+                coreQuestion: "Wie kann das Produkt effizient und für alle erschwinglich maschinell hergestellt werden?",
+                objectName: "Bauhaus-Schachspiel",
+                enableImageHotspots: false,
+                image: "schach.png",
+                compareImage: "schach_alt.png",
+                imageAlt: "Bauhaus Schachspiel mit geometrischen Figuren",
+                compareImageAlt: "Historisches Vergleichsschach mit figurativen Formen",
+                imageWidth: "clamp(240px, 41vh, 390px)",
+                introHtml: `
+                    <h3>Schritt 5: Die Industrielle Serienfertigung</h3>
+                    <p>Das ultimative Ziel des Bauhauses war es nicht, exklusive Kunstobjekte für eine wohlhabende Elite zu schaffen, sondern gut gestaltete, erschwingliche Produkte für die breite Gesellschaft. Dafür musste das Design zwingend an die industrielle Serienfertigung (am Bauhaus oft „Typisierung“ genannt) angepasst werden. Ein Entwurf durfte nicht mehr von aufwendiger, teurer Handarbeit abhängig sein. Er musste so konzipiert werden, dass Maschinen ihn schnell, materialsparend und in hoher Auflage produzieren konnten. Dies führte zur Entwicklung von modularen Systemen, standardisierten Bauteilen und maschinengerechten Formen.</p>
+                `,
+                compareHtml: `
+                    <h3>Vergleich</h3>
+                    <p>Der Gegensatz: Bei historischen Schachspielen ist der Springer ein detailliert geschnitzter Pferdekopf, der Turm eine kleine Burg mit Zinnen, der König trägt ein filigranes Kreuz. Jede dieser Figuren erfordert stundenlange Handarbeit von erfahrenen Schnitzern. Es gibt kaum identische Grundformen zwischen den verschiedenen Figuren. Eine schnelle, kostengünstige und völlig identische Massenproduktion auf Maschinen ist mit diesen romantisch-figürlichen Designs absolut unmöglich.</p>
+                `,
+                parts: [
+                    {
+                        id: "grundkoerper",
+                        label: "Grundkörper",
+                        content: `
+                            <h3>Maschinengerechte Grundkörper (Standardisierung)</h3>
+                            <p><strong>Die Umsetzung:</strong> Hartwig verbannte jegliche figürliche Darstellung. Seine Spielfiguren bestehen ausschließlich aus elementaren geometrischen Grundkörpern: dem Würfel, dem Zylinder und der Kugel.</p>
+                            <p><strong>Der Grund:</strong> Diese einfachen Formen müssen nicht mühsam von Hand geschnitzt werden. Sie lassen sich in einer Tischlerei problemlos, schnell und kostengünstig maschinell sägen, fräsen und bohren.</p>
+                        `,
+                        hotspots: [
+                            { top: "0%", left: "0%", width: "22%", height: "100%", borderRadius: "10% 8% 8% 10%" },
+                            { top: "0%", left: "78%", width: "22%", height: "100%", borderRadius: "8% 10% 10% 8%" }
+                        ]
+                    },
+                    {
+                        id: "baukasten",
+                        label: "Baukastenprinzip",
+                        content: `
+                            <h3>Das Baukastenprinzip (Modularität)</h3>
+                            <p><strong>Die Umsetzung:</strong> Viele Figuren des Spiels basieren auf einem exakt einheitlichen Grundmaß (dem Basis-Würfel). Komplexere Figuren werden einfach aus diesen standardisierten Elementen zusammengesetzt (wie etwa beim König, der aus einem kleinen, diagonal gestellten Würfel auf einem größeren Basis-Würfel besteht).</p>
+                            <p><strong>Der Grund:</strong> Durch gleiche Ausgangsmaße wird der Materialverschnitt minimiert und der maschinelle Produktionsprozess extrem rationalisiert.</p>
+                        `,
+                        hotspots: [
+                            { top: "0%", left: "0%", width: "100%", height: "20%", borderRadius: "8% 8% 0 0" },
+                            { top: "80%", left: "0%", width: "100%", height: "20%", borderRadius: "0 0 8% 8%" }
+                        ]
+                    },
+                    {
+                        id: "didaktik",
+                        label: "Didaktische Formgebung",
+                        content: `
+                            <h3>Didaktische Formgebung (Die Form zeigt die Funktion)</h3>
+                            <p><strong>Die Umsetzung:</strong> Die radikale Vereinfachung für die Produktion geht Hand in Hand mit der Funktion. Die Form jeder Figur visualisiert exakt ihre Zugrichtung auf dem Brett:</p>
+                            <p><strong>Der Turm</strong> (ein massiver Würfel) symbolisiert gerade Züge (horizontal und vertikal).</p>
+                            <p><strong>Der Läufer</strong> (ein Würfel mit schräg abgeschnittenen Ecken) steht für diagonale Züge.</p>
+                            <p><strong>Der Springer</strong> (zwei zu einem rechten Winkel verbundene Quader) zeigt den L-förmigen Rösselsprung.</p>
+                            <p><strong>Die Dame</strong> (Würfel mit Kugel) symbolisiert höchste Beweglichkeit in alle Richtungen.</p>
+                        `,
+                        hotspots: [
+                            { top: "6%", left: "77%", width: "23%", height: "35%", borderRadius: "8% 12% 12% 10%" },
+                            { top: "34%", left: "78%", width: "22%", height: "35%", borderRadius: "10% 12% 12% 10%" },
+                            { top: "67%", left: "78%", width: "22%", height: "30%", borderRadius: "10% 12% 12% 10%" }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        const titleEl = document.getElementById("page-title");
+        const imageWrapper = document.getElementById("image-wrapper");
+        const imageEl = document.getElementById("topic-image");
+        const imageCaptionEl = document.getElementById("image-caption");
+        const partNavEl = document.getElementById("part-nav");
+        const infoContentEl = document.getElementById("info-content");
+        const topicLinks = document.querySelectorAll(".page-nav .nav-link");
+
+        let currentTopic = null;
+
+        function setActiveTopicLink(topicKey) {
+            topicLinks.forEach((link) => {
+                link.classList.toggle("nav-link-active", link.getAttribute("data-topic") === topicKey);
+            });
+        }
+
+        function setActivePartButton(partId) {
+            const partButtons = partNavEl.querySelectorAll(".part-btn");
+            partButtons.forEach((button) => {
+                button.classList.toggle("part-btn-active", button.getAttribute("data-part") === partId);
+            });
+        }
+
+        function withoutDescriptionHeadings(html) {
+            return html.replace(/<h3>[\s\S]*?<\/h3>\s*/g, "");
+        }
+
+        function syncImageCaption(topic) {
+            imageCaptionEl.textContent = topic.objectName || "";
+            imageCaptionEl.classList.toggle("image-caption-hidden", Boolean(topic.hideImageCaption));
+        }
+
+        function showIntro(topic) {
+            imageEl.src = topic.image;
+            imageEl.alt = topic.imageAlt;
+            syncImageCaption(topic);
+            renderHotspots(topic);
+            infoContentEl.innerHTML = withoutDescriptionHeadings(topic.introHtml);
+            setActivePartButton("erklaerung");
+        }
+
+        function showPart(topic, partId) {
+            const part = topic.parts.find((item) => item.id === partId);
+            if (!part) {
+                return;
+            }
+
+            imageEl.src = topic.image;
+            imageEl.alt = topic.imageAlt;
+            syncImageCaption(topic);
+            renderHotspots(topic);
+            infoContentEl.innerHTML = withoutDescriptionHeadings(part.content);
+            setActivePartButton(part.id);
+        }
+
+        function showComparison(topic) {
+            imageEl.src = topic.compareImage;
+            imageEl.alt = topic.compareImageAlt || topic.imageAlt;
+            imageCaptionEl.classList.add("image-caption-hidden");
+            imageWrapper.querySelectorAll(".hotspot").forEach((node) => node.remove());
+            infoContentEl.innerHTML = withoutDescriptionHeadings(topic.compareHtml);
+            setActivePartButton("vergleich");
+        }
+
+        function createHotspot(part, zone) {
+            const hotspot = document.createElement("div");
+            hotspot.className = "hotspot";
+            hotspot.dataset.part = part.id;
+            hotspot.title = `${part.label} anklicken`;
+            hotspot.style.top = zone.top;
+            hotspot.style.left = zone.left;
+            hotspot.style.width = zone.width;
+            hotspot.style.height = zone.height;
+            if (zone.borderRadius) {
+                hotspot.style.borderRadius = zone.borderRadius;
+            }
+            hotspot.addEventListener("click", () => showPart(currentTopic, part.id));
+            return hotspot;
+        }
+
+        function renderHotspots(topic) {
+            imageWrapper.querySelectorAll(".hotspot").forEach((node) => node.remove());
+            return;
+        }
+
+        function renderTopic(topicKey) {
+            const topic = topics[topicKey] || topics.einfuehrung;
+            currentTopic = topic;
+
+            document.documentElement.style.setProperty("--image-max-width", topic.imageWidth);
+            titleEl.textContent = topic.isIntro ? topic.coreQuestion : `Kernfrage: ${topic.coreQuestion}`;
+            imageEl.src = topic.image;
+            imageEl.alt = topic.imageAlt;
+            setActiveTopicLink(topicKey);
+
+            partNavEl.innerHTML = "";
+
+            const introButton = document.createElement("button");
+            introButton.type = "button";
+            introButton.className = "part-btn";
+            introButton.dataset.part = "erklaerung";
+            introButton.textContent = "Erklärung";
+            introButton.addEventListener("click", () => showIntro(topic));
+            partNavEl.appendChild(introButton);
+
+            topic.parts.forEach((part) => {
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = "part-btn";
+                button.dataset.part = part.id;
+                button.textContent = part.label;
+                button.addEventListener("click", () => showPart(topic, part.id));
+                partNavEl.appendChild(button);
+            });
+
+            if (topic.compareHtml) {
+                const compareButton = document.createElement("button");
+                compareButton.type = "button";
+                compareButton.className = "part-btn";
+                compareButton.dataset.part = "vergleich";
+                compareButton.textContent = "Vergleich";
+                compareButton.addEventListener("click", () => showComparison(topic));
+                partNavEl.appendChild(compareButton);
+            }
+
+            showIntro(topic);
+        }
+
+        function topicFromHash() {
+            const key = window.location.hash.replace("#", "");
+            return topics[key] ? key : "einfuehrung";
+        }
+
+        topicLinks.forEach((link) => {
+            link.addEventListener("click", (event) => {
+                event.preventDefault();
+                const topicKey = link.getAttribute("data-topic");
+                window.location.hash = topicKey;
+            });
+        });
+
+        window.addEventListener("hashchange", () => {
+            renderTopic(topicFromHash());
+        });
+
+        renderTopic(topicFromHash());
+    </script>
+
+</body>
+</html>
